@@ -1,0 +1,13 @@
+{
+  "name": "catalog-placements",
+  "version": "1.0.0",
+  "description": "Solution for Catalog Placements Assignment",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": ["polynomial", "secret", "lagrange", "interpolation"],
+  "author": "",
+  "license": "MIT"
+}

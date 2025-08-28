@@ -46,29 +46,25 @@ function parseInput(jsonData) {
     return { n, k, roots };
 }
 
-// Function to calculate the secret using Lagrange interpolation
+// Function to calculate the secret using Lagrange interpolation (CORRECTED)
 function calculateSecret(roots, k) {
     const points = roots.slice(0, k); // Use first k roots
-    
     let secret = 0n;
-    const mod = 1000000007n; // Large prime modulus
-    
+    const mod = 1000000007n;
+
     for (let i = 0; i < points.length; i++) {
-        let numerator = 1n;
-        let denominator = 1n;
+        let term = points[i].y;
         
         for (let j = 0; j < points.length; j++) {
             if (i !== j) {
-                numerator = (numerator * (-points[j].x)) % mod;
-                denominator = (denominator * (points[i].x - points[j].x)) % mod;
+                // Correct Lagrange formula: term *= (0 - x_j) / (x_i - x_j)
+                const numerator = (-points[j].x) % mod;
+                const denominator = (points[i].x - points[j].x) % mod;
+                const invDenominator = modInverse(denominator, mod);
+                term = term * numerator % mod * invDenominator % mod;
             }
         }
         
-        // Modular inverse of denominator
-        let invDenominator = modInverse(denominator, mod);
-        if (invDenominator < 0n) invDenominator += mod;
-        
-        const term = (points[i].y * numerator % mod) * invDenominator % mod;
         secret = (secret + term) % mod;
     }
     
@@ -125,5 +121,3 @@ function main() {
 if (require.main === module) {
     main();
 }
-
-module.exports = { convertToDecimal, parseInput, calculateSecret };
